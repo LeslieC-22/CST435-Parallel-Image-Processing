@@ -10,11 +10,17 @@ def gaussian_blur(img):
     return cv2.GaussianBlur(img, (3, 3), sigmaX=0)
 
 def sobel_edge(img):
-    """Apply Sobel edge detection."""
-    sobelx = cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=3)
-    sobely = cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=3)
-    magnitude = np.sqrt(sobelx**2 + sobely**2)
-    magnitude = (magnitude / magnitude.max()) * 255
+    gx = cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=3)
+    gy = cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=3)
+
+    magnitude = np.sqrt(gx**2 + gy**2)
+    max_val = magnitude.max()
+
+    if max_val > 0:
+        magnitude = (magnitude / max_val) * 255
+    else:
+        magnitude = np.zeros_like(magnitude)
+
     return magnitude.astype(np.uint8)
 
 def sharpen(img):
