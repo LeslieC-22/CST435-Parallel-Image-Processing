@@ -3,9 +3,9 @@ import os
 import cv2
 
 # ===================== CONFIG =====================
-H5_FILE = "../data/food_c101_n1000_r384x384x3.h5"
-OUTPUT_DIR = "../data/subset_500"
-MAX_IMAGES = 500   
+H5_FILE = "../data/food_test_c101_n1000_r128x128x1.h5"
+OUTPUT_DIR = "../data/subset_5000"
+MAX_IMAGES = 5000   
 # =================================================
 
 def convert_h5_to_images():
