@@ -36,17 +36,25 @@ def print_table_header():
 def run_experiments():
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    RESULTS_DIR = os.path.join(BASE_DIR, "..", "results")
+    os.makedirs(RESULTS_DIR, exist_ok = True )
 
     datasets = {
         "100_images": os.path.join(BASE_DIR, "..", "dataset", "images_100"),
         "5000_images": os.path.join(BASE_DIR, "..", "dataset", "images_5000")
     }
 
-    # Worker configuration (power-of-two scaling)
     max_cpu = cpu_count()
     max_exp = int(math.log2(max_cpu))
+
     worker_counts = [2 ** x for x in range(1, max_exp + 1)]
-    worker_counts.append(max_cpu * 2)  # oversubscription
+
+    if max_cpu not in worker_counts:
+        worker_counts.append(max_cpu)
+
+    worker_counts.append(max_cpu * 2)
+
+    worker_counts = sorted(set(worker_counts))
 
     print_title("CST435 ASSIGNMENT 2: PARALLEL IMAGE PROCESSING")
     print(f"Logical CPUs detected : {max_cpu}")
@@ -59,6 +67,9 @@ def run_experiments():
         if not os.path.exists(dataset_path):
             print(f"[WARNING] Dataset not found: {dataset_name}")
             continue
+        
+        output_dir = os.path.join(RESULTS_DIR, dataset_name)
+        seq.run_serial(dataset_path, output_dir, save=True)
 
         print_title(f"DATASET: {dataset_name}")
 
