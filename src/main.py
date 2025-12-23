@@ -1,13 +1,40 @@
 import os
+import math
 from multiprocessing import cpu_count
 
-# Import paradigms
+# Execution paradigms
 import serial_pipeline as seq
 import multiprocessing_pipeline as mp
 import multithread_pipeline as cf
 
+# Plotting graphs
+import plot_analysis
 
-def main():
+
+# ==================================================
+# Formatting helpers
+# ==================================================
+WIDTH = 60
+
+def print_title(title):
+    print("\n" + "=" * WIDTH)
+    print(title.center(WIDTH))
+    print("=" * WIDTH)
+
+def print_section(title):
+    print("\n" + title)
+    print("-" * WIDTH)
+
+def print_table_header():
+    print(f"{'Workers':>8} | {'Time (s)':>10} | {'Speedup':>8} | {'Efficiency':>10}")
+    print("-" * WIDTH)
+
+
+# ==================================================
+# Main experiment
+# ==================================================
+def run_experiments():
+
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
     datasets = {
@@ -15,58 +42,65 @@ def main():
         "5000_images": os.path.join(BASE_DIR, "..", "dataset", "images_5000")
     }
 
-    RESULTS_DIR = os.path.join(BASE_DIR, "..", "results")
-    os.makedirs(RESULTS_DIR, exist_ok=True)
-
+    # Worker configuration (power-of-two scaling)
     max_cpu = cpu_count()
-    worker_counts = [2, 4, 8, 12, 16]
-    worker_counts = [w for w in worker_counts if w <= max_cpu]
+    max_exp = int(math.log2(max_cpu))
+    worker_counts = [2 ** x for x in range(1, max_exp + 1)]
+    worker_counts.append(max_cpu * 2)  # oversubscription
 
-    print("--- CST435 Assignment 2: Parallel Image Processing ---")
+    print_title("CST435 ASSIGNMENT 2: PARALLEL IMAGE PROCESSING")
+    print(f"Logical CPUs detected : {max_cpu}")
+    print(f"Worker configurations : {worker_counts}")
 
-    for name, path in datasets.items():
+    all_results = {}
 
-        if not os.path.exists(path):
-            print(f"Skipping {name}: Path not found.")
+    for dataset_name, dataset_path in datasets.items():
+
+        if not os.path.exists(dataset_path):
+            print(f"[WARNING] Dataset not found: {dataset_name}")
             continue
-        
-        # Save processed images
-        output_dir = os.path.join(RESULTS_DIR, name)
-        seq.run_serial(path, output_dir, save=True)
 
-        print("\n" + "=" * 50)
-        print(f"DATASET: {name}")
-        print("=" * 50)
+        print_title(f"DATASET: {dataset_name}")
 
-        # Calculate serial baseline
-        print("\n-- Sequential Baseline --")
-        t_serial = seq.measure_serial(path)
-        print(f"Serial Time: {t_serial:.4f}s")
+        # Serial baseline
+        print_section("SEQUENTIAL BASELINE")
+        t_serial = seq.measure_serial(dataset_path)
+        print(f"Execution Time : {t_serial:.4f} seconds")
+
+        mp_times, mt_times = [], []
 
         # Multiprocessing
-        print("\n-- Multiprocessing Paradigm --\n")
-        print(f"{'Workers':>8} | {'Time (s)':>10} | {'Speedup':>8} | {'Efficiency':>10}")
-        print("-" * 46)
-
+        print_section("MULTIPROCESSING RESULTS")
+        print_table_header()
         for w in worker_counts:
-            t_mp = mp.measure_mp(path, workers=w)
-            speedup = t_serial / t_mp
-            efficiency = speedup / w
-            print(f"{w:>8} | {t_mp:>10.4f} | {speedup:>8.2f} | {efficiency:>10.2f}")
+            t = mp.measure_mp(dataset_path, workers=w)
+            mp_times.append(t)
+            print(f"{w:>8} | {t:>10.4f} | {t_serial/t:>8.2f} | {(t_serial/t)/w:>10.2f}")
 
         # Multithreading
-        print("\n-- Concurrent.Futures Paradigm --\n")
-        print(f"{'Workers':>8} | {'Time (s)':>10} | {'Speedup':>8} | {'Efficiency':>10}")
-        print("-" * 46)
-
+        print_section("MULTITHREADING RESULTS")
+        print_table_header()
         for w in worker_counts:
-            t_cf = cf.measure_cf(path, workers=w)
-            speedup = t_serial / t_cf
-            efficiency = speedup / w
-            print(f"{w:>8} | {t_cf:>10.4f} | {speedup:>8.2f} | {efficiency:>10.2f}")
+            t = cf.measure_cf(dataset_path, workers=w)
+            mt_times.append(t)
+            print(f"{w:>8} | {t:>10.4f} | {t_serial/t:>8.2f} | {(t_serial/t)/w:>10.2f}")
 
-    print("\n--Process complete.--")
+        # Store results (NO plotting here)
+        all_results[dataset_name] = {
+            "workers": worker_counts,
+            "serial": t_serial,
+            "multiprocessing": mp_times,
+            "multithreading": mt_times
+        }
+
+    print_title("PROCESS COMPLETED SUCCESSFULLY")
+    return all_results
 
 
+# ==================================================
+# Entry point
+# ==================================================
 if __name__ == "__main__":
-    main()
+    
+    results = run_experiments()
+    plot_analysis.plot_analysis(results)

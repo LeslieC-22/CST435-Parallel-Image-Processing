@@ -53,7 +53,7 @@ def run_mp(input_folder, output_folder=None, workers=1, save=False):
 
 
 # --------------------------------------------------
-# Measurement Function (called by main.py)
+# Measure execution time
 # --------------------------------------------------
 def measure_mp(input_folder, workers):
     start = time.time()
