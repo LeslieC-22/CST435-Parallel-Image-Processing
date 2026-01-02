@@ -49,14 +49,13 @@ def run_experiments():
     max_exp = int(math.log2(max_cpu))
 
     worker_counts = [2 ** x for x in range(1, max_exp + 1)]
-    worker_counts=[1,2,4,8]
 
-    # if max_cpu not in worker_counts:
-    #     worker_counts.append(max_cpu)
+    if max_cpu not in worker_counts:
+        worker_counts.append(max_cpu)
 
-    # worker_counts.append(max_cpu * 2)
+    worker_counts.append(max_cpu * 2)
 
-    # worker_counts = sorted(set(worker_counts))
+    worker_counts = sorted(set(worker_counts))
 
     print_title("CST435 ASSIGNMENT 2: PARALLEL IMAGE PROCESSING")
     print(f"Logical CPUs detected : {max_cpu}")
