@@ -50,7 +50,6 @@ def run_cf(input_folder, output_folder=None, workers=1, save=False):
     with ThreadPoolExecutor(max_workers=workers) as executor:
         executor.map(process_image_cf, tasks)
 
-
 # --------------------------------------------------
 # Measure execution time
 # --------------------------------------------------

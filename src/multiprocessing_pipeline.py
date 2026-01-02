@@ -48,9 +48,11 @@ def run_mp(input_folder, output_folder=None, workers=1, save=False):
         if f.lower().endswith((".jpg", ".png", ".jpeg"))
     ]
 
+    if not tasks:
+        print("Check your folder path or file extensions!")
+
     with Pool(processes=workers) as pool:
         pool.map(process_image_mp, tasks)
-
 
 # --------------------------------------------------
 # Measure execution time

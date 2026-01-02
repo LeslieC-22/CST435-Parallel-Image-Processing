@@ -6,6 +6,7 @@ from multiprocessing import cpu_count
 import serial_pipeline as seq
 import multiprocessing_pipeline as mp
 import multithread_pipeline as cf
+import predicted_value as amdahl
 
 # Plotting graphs
 import plot_analysis
@@ -48,13 +49,14 @@ def run_experiments():
     max_exp = int(math.log2(max_cpu))
 
     worker_counts = [2 ** x for x in range(1, max_exp + 1)]
+    worker_counts=[1,2,4,8]
 
-    if max_cpu not in worker_counts:
-        worker_counts.append(max_cpu)
+    # if max_cpu not in worker_counts:
+    #     worker_counts.append(max_cpu)
 
-    worker_counts.append(max_cpu * 2)
+    # worker_counts.append(max_cpu * 2)
 
-    worker_counts = sorted(set(worker_counts))
+    # worker_counts = sorted(set(worker_counts))
 
     print_title("CST435 ASSIGNMENT 2: PARALLEL IMAGE PROCESSING")
     print(f"Logical CPUs detected : {max_cpu}")
@@ -88,6 +90,12 @@ def run_experiments():
             mp_times.append(t)
             print(f"{w:>8} | {t:>10.4f} | {t_serial/t:>8.2f} | {(t_serial/t)/w:>10.2f}")
 
+        amdahl_mp = amdahl.compute_amdahl_predictions(
+        serial_time=t_serial,
+        worker_list=worker_counts,
+        measured_times=mp_times
+        )
+
         # Multithreading
         print_section("MULTITHREADING RESULTS")
         print_table_header()
@@ -96,12 +104,20 @@ def run_experiments():
             mt_times.append(t)
             print(f"{w:>8} | {t:>10.4f} | {t_serial/t:>8.2f} | {(t_serial/t)/w:>10.2f}")
 
+        amdahl_mt = amdahl.compute_amdahl_predictions(
+            serial_time=t_serial,
+            worker_list=worker_counts,
+            measured_times=mt_times
+        )
+
         # Store results (NO plotting here)
         all_results[dataset_name] = {
             "workers": worker_counts,
             "serial": t_serial,
             "multiprocessing": mp_times,
-            "multithreading": mt_times
+            "multithreading": mt_times,
+            "amdahl_mp": amdahl_mp,
+            "amdahl_mt": amdahl_mt
         }
 
     print_title("PROCESS COMPLETED SUCCESSFULLY")
