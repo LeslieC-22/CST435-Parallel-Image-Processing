@@ -41,10 +41,9 @@ def plot_graph(workers, y1, y2, label1, label2, ylabel, title, filename, outdir)
 # ==================================================
 def plot_analysis(results):
 
-    RESULTS_DIR = (
-        r"C:\University\Y4S1\CST435\Assignment 2\Assign2"
-        r"\CST435-Parallel-Image-Processing\results\graphs"
-    )
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    RESULTS_DIR = os.path.join(BASE_DIR, "..", "results", "graphs")
+
     os.makedirs(RESULTS_DIR, exist_ok=True)
 
     for dataset, data in results.items():
