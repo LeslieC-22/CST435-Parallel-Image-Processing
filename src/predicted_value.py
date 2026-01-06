@@ -39,7 +39,7 @@ def compute_amdahl_predictions(serial_time, worker_list, measured_times):
     print("\n================ Amdahl's Law Analysis ================")
     print(f"Estimated Parallel Fraction (P): {P:.4f}")
     print("-------------------------------------------------------")
-    print(f"{'Workers':>8} | {'Exec Time':>12} | {'SpeedUp':>10} | {'Efficiency':>11}")
+    print(f"{'Workers':>8} | {'Exec Time (s)':>12} | {'SpeedUp':>10} | {'Efficiency':>11}")
     print("-" * 55)
 
     results = {
@@ -50,15 +50,15 @@ def compute_amdahl_predictions(serial_time, worker_list, measured_times):
     }
 
     for w in worker_list:
-        s = amdahl_speedup(P, w)
-        t = amdahl_execution_time(serial_time, s)
-        e = amdahl_efficiency(s, w)
+        s = round(amdahl_speedup(P, w),2)
+        t = round(amdahl_execution_time(serial_time, s),2)
+        e = round(amdahl_efficiency(s, w),2)
 
         results["execution_time"].append(t)
         results["speedup"].append(s)
         results["efficiency"].append(e)
 
-        print(f"{w:>8} | {t:>12.3f} | {s:>10.3f} | {e:>11.3f}")
+        print(f"{w:>8} | {t:>12.2f} | {s:>10.2f} | {e:>11.2f}")
 
     print("=======================================================\n")
 

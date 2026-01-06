@@ -27,7 +27,7 @@ def print_section(title):
     print("-" * WIDTH)
 
 def print_table_header():
-    print(f"{'Workers':>8} | {'Time (s)':>10} | {'Speedup':>8} | {'Efficiency':>10}")
+    print(f"{'Workers':>8} | {'Exec Time (s)':>10} | {'Speedup':>8} | {'Efficiency':>10}")
     print("-" * WIDTH)
 
 
@@ -86,13 +86,15 @@ def run_experiments():
         print_table_header()
         for w in worker_counts:
             t = mp.measure_mp(dataset_path, workers=w)
-            mp_times.append(t)
-            print(f"{w:>8} | {t:>10.4f} | {t_serial/t:>8.2f} | {(t_serial/t)/w:>10.2f}")
+            s = t_serial / t
+            e = (t_serial / t) / w
+            mp_times.append((t, s, e)) 
+            print(f"{w:>8} | {t:>10.2f} | {s:>8.2f} | {e:>10.2f}")
 
         amdahl_mp = amdahl.compute_amdahl_predictions(
         serial_time=t_serial,
         worker_list=worker_counts,
-        measured_times=mp_times
+        measured_times=[t for t, _, _ in mp_times]
         )
 
         # Multithreading
@@ -100,13 +102,15 @@ def run_experiments():
         print_table_header()
         for w in worker_counts:
             t = cf.measure_cf(dataset_path, workers=w)
-            mt_times.append(t)
-            print(f"{w:>8} | {t:>10.4f} | {t_serial/t:>8.2f} | {(t_serial/t)/w:>10.2f}")
+            s = t_serial / t
+            e = (t_serial / t) / w
+            mt_times.append((t, s, e))
+            print(f"{w:>8} | {t:>10.2f} | {s:>8.2f} | {e:>10.2f}")
 
         amdahl_mt = amdahl.compute_amdahl_predictions(
             serial_time=t_serial,
             worker_list=worker_counts,
-            measured_times=mt_times
+            measured_times=[t for t, _, _ in mt_times]
         )
 
         # Store results (NO plotting here)

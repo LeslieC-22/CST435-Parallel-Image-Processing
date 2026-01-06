@@ -24,11 +24,10 @@ def compute_efficiency(speedups, workers):
 # ==================================================
 # Plot functions
 # ==================================================
-
-def plot_graph(workers, y1, y2, label1, label2, ylabel, title, filename, outdir):
+def plot_graph(workers, y1, y2, label1, label2, ylabel, title, filename, outdir, color1, color2):
     plt.figure()
-    plt.plot(workers, y1, "o-", label=label1)
-    plt.plot(workers, y2, "s--", label=label2)
+    plt.plot(workers, y1, "o-",color= color1, label=label1)
+    plt.plot(workers, y2, "o-", color= color2, label=label2)
     plt.xlabel("Number of Workers")
     plt.ylabel(ylabel)
     plt.title(title)
@@ -52,14 +51,16 @@ def plot_analysis(results):
         serial = data["serial"]
 
         # Measured results
-        mp_times = data["multiprocessing"]
-        mt_times = data["multithreading"]
+        mp = data["multiprocessing"]
+        mt = data["multithreading"]
 
-        sp_mp = compute_speedup(serial, mp_times)
-        sp_mt = compute_speedup(serial, mt_times)
+        mp_execution = [t for t, _, _ in mp]
+        sp_mp = [s for _, s, _ in mp]
+        ef_mp = [e for _, _, e in mp]
 
-        ef_mp = compute_efficiency(sp_mp, workers)
-        ef_mt = compute_efficiency(sp_mt, workers)
+        mt_execution = [t for t, _, _ in mt]
+        sp_mt = [s for _, s, _ in mt]
+        ef_mt = [e for _, _, e in mt]
 
         # Amdahl predictions (ALREADY COMPUTED)
         amdahl_mp = data["amdahl_mp"]
@@ -74,38 +75,44 @@ def plot_analysis(results):
 
         plot_graph(
             workers,
-            mp_times,
-            mt_times,
+            mp_execution,
+            mt_execution,
             "Multiprocessing",
             "Multithreading",
             "Execution Time (s)",
             "Multiprocessing Execution Time vs MultiThreading Execution Time ",
             "mp_execution_time_vs_mt_execution.png",
-            os.path.join(dataset_dir, "Execution Time")
+            os.path.join(dataset_dir, "Execution Time"),
+            "red",
+            "blue"
         )
 
         plot_graph(
             workers,
-            mp_times,
+            mp_execution,
             amdahl_mp["execution_time"],
             "Multiprocessing",
             "Amdahl",
             "Execution Time (s)",
             "Multiprocessing Execution Time vs Amdahl Execution Time",
             "mp_execution_time_vs_amdahl.png",
-            os.path.join(dataset_dir, "Execution Time")
+            os.path.join(dataset_dir, "Execution Time"),
+            "red",
+            "green"
         )
 
         plot_graph(
             workers,
-            mt_times,
+            mt_execution,
             amdahl_mt["execution_time"],
             "MultiThreading",
             "Amdahl",
             "Execution Time (s)",
             "Multithreading Execution Time vs Amdahl Execution Time",
             "mt_execution_time_vs_amdahl.png",
-            os.path.join(dataset_dir, "Execution Time")
+            os.path.join(dataset_dir, "Execution Time"),
+            "blue",
+            "green"
         )
 
         # ==================================================
@@ -121,7 +128,9 @@ def plot_analysis(results):
             "SpeedUp",
             "Multiprocessing Speedup vs MultiThreading Speedup",
             "mp_speedup_vs_mt_speedup.png",
-            os.path.join(dataset_dir, "SpeedUp")
+            os.path.join(dataset_dir, "SpeedUp"),
+            "red",
+            "blue"
         )
 
         plot_graph(
@@ -133,7 +142,9 @@ def plot_analysis(results):
             "Speedup",
             "Multiprocessing Speedup vs Amdahl Speedup",
             "mp_speedup_vs_amdahl.png",
-            os.path.join(dataset_dir, "Speedup")
+            os.path.join(dataset_dir, "Speedup"),
+            "red",
+            "green"
         )
         plot_graph(
             workers,
@@ -144,7 +155,9 @@ def plot_analysis(results):
             "Speedup",
             "Multithreading Speedup vs Amdahl Speedup",
             "mt_speedup_vs_amdahl.png",
-            os.path.join(dataset_dir, "SpeedUp")
+            os.path.join(dataset_dir, "SpeedUp"),
+            "blue",
+            "green"
         )
 
         # ==================================================
@@ -159,7 +172,9 @@ def plot_analysis(results):
             "Efficiency",
             "Multiprocessing Efficiency vs Multithreading Efficiency ",
             "mp_efficiency_vs_mt_efficiency.png",
-            os.path.join(dataset_dir, "Efficiency")
+            os.path.join(dataset_dir, "Efficiency"),
+            "red",
+            "blue"
         )
 
         plot_graph(
@@ -171,7 +186,9 @@ def plot_analysis(results):
             "Efficiency",
             "Multiprocessing Efficiency vs Amdahl Efficiency",
             "mp_efficiency_vs_amdahl.png",
-            os.path.join(dataset_dir, "Efficiency")
+            os.path.join(dataset_dir, "Efficiency"),
+            "red",
+            "green"
         )
 
         plot_graph(
@@ -183,7 +200,9 @@ def plot_analysis(results):
             "Efficiency",
             "Multithreading Efficiency vs Amdahl Efficiency",
             "mt_efficiency_vs_amdahl.png",
-            os.path.join(dataset_dir, "Efficiency")
+            os.path.join(dataset_dir, "Efficiency"),
+            "blue",
+            "green"
         )
 
     print("All graphs generated using precomputed Amdahl predictions.")
