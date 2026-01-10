@@ -1,14 +1,12 @@
-# CST435: Parallel and Cloud Computing – Assignment 2  
+# CST435: Parallel and Cloud Computing – Assignment 2  (Group 20)
 ## Parallel Image Processing System (Python)
 
----
 
 ## Project Overview
 This project implements a parallel image processing system in Python that applies multiple image filters to a subset of images from the Food-101 dataset. The main objective is to compare different parallel programming approaches in Python and analyse their performance when executed on Google Cloud Platform (GCP).
 
 A sequential (serial) implementation is first developed and used as a baseline for performance evaluation. Two parallel implementations are then developed and compared against this baseline.
 
----
 
 ## Dataset
 https://www.kaggle.com/datasets/dansbecker/food-101
@@ -17,16 +15,14 @@ For performance evaluation, only subsets of the dataset were used. Two dataset s
 - 100 images for small-scale testing 
 - 5000 images for large-scale testing
 
----
 
-## Image Processing Operations**
+## Image Processing Operations
 1. Grayscale conversion
 2. Gaussian blur (3×3 kernel)
 3. Edge detection (Sobel filter)
 4. Image sharpening
 5. Brightness adjustment
 
----
 
 ## Implementation
 
@@ -50,7 +46,6 @@ For performance evaluation, only subsets of the dataset were used. Two dataset s
 - Lower overhead than multiprocessing
 - Performance is affected by Python’s GIL
 
----
 
 ## Requirements
 - Python 3.13
@@ -58,7 +53,6 @@ For performance evaluation, only subsets of the dataset were used. Two dataset s
 - Numpy
 - Matplotlib
 
----
 
 ## Results
 
@@ -84,9 +78,6 @@ The performance comparison is also **analysed using Amdahl’s Law** to evaluate
 
 Performance results are **visualised using graphs**, which are generated automatically and stored in the `results/graphs` directory.
 
-These comparisons help evaluate scalability, parallel efficiency, and the limitations imposed by the sequential portion of the program.
-
----
 
 ## Google Cloud Platform (GCP) Configuration and Execution
 
