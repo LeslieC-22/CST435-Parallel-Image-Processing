@@ -2,10 +2,12 @@
 ## Parallel Image Processing System (Python)
 
 
+
 ## Project Overview
 This project implements a parallel image processing system in Python that applies multiple image filters to a subset of images from the Food-101 dataset. The main objective is to compare different parallel programming approaches in Python and analyse their performance when executed on Google Cloud Platform (GCP).
 
 A sequential (serial) implementation is first developed and used as a baseline for performance evaluation. Two parallel implementations are then developed and compared against this baseline.
+
 
 
 ## Dataset
@@ -16,12 +18,14 @@ For performance evaluation, only subsets of the dataset were used. Two dataset s
 - 5000 images for large-scale testing
 
 
+
 ## Image Processing Operations**
 1. Grayscale conversion
 2. Gaussian blur (3×3 kernel)
 3. Edge detection (Sobel filter)
 4. Image sharpening
 5. Brightness adjustment
+
 
 
 ## Implementation
@@ -47,11 +51,13 @@ For performance evaluation, only subsets of the dataset were used. Two dataset s
 - Performance is affected by Python’s GIL
 
 
+
 ## Requirements
 - Python 3.13
 - OpenCV Library
 - Numpy
 - Matplotlib
+
 
 
 ## Results
@@ -77,6 +83,7 @@ The sequential version is used as the baseline. Experiments are conducted using 
 The performance comparison is also **analysed using Amdahl’s Law** to evaluate theoretical speedup limits and understand scalability constraints caused by the sequential portion of the program.
 
 Performance results are **visualised using graphs**, which are generated automatically and stored in the `results/graphs` directory.
+
 
 
 ## Google Cloud Platform (GCP) Configuration and Execution
