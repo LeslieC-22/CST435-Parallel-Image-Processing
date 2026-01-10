@@ -10,56 +10,37 @@ from imageProcessing import (
     adjust_brightness
 )
 
-# --------------------------------------------------
-# Image Processing Task
-# --------------------------------------------------
-def process_image_mp(args):
-    """Apply required image processing filters in a separate process."""
-    input_path, output_path, save = args
-
+# Process one image
+def process_image_mp(input_path):
+    # Read image
     img = cv2.imread(input_path)
     if img is None:
         return
 
+    # Apply image processing operations
     img = grayscale(img)
     img = gaussian_blur(img)
     img = sobel_edge(img)
     img = sharpen(img)
     img = adjust_brightness(img, 20)
 
-    if save and output_path:
-        cv2.imwrite(output_path, img)
 
-
-# --------------------------------------------------
-# Run multiprocessing
-# --------------------------------------------------
-def run_mp(input_folder, output_folder=None, workers=1, save=False):
-    if save and output_folder:
-        os.makedirs(output_folder, exist_ok=True)
-
+# Run multiprocessing using Pool
+def run_mp(input_folder, workers=1):
+    # Create task list
     tasks = [
-        (
-            os.path.join(input_folder, f),
-            os.path.join(output_folder, f) if save else None,
-            save
-        )
+        os.path.join(input_folder, f)
         for f in os.listdir(input_folder)
         if f.lower().endswith((".jpg", ".png", ".jpeg"))
     ]
 
-    if not tasks:
-        print("Check your folder path or file extensions!")
-
+    # Execute tasks in parallel
     with Pool(processes=workers) as pool:
         pool.map(process_image_mp, tasks)
 
-# --------------------------------------------------
+
 # Measure execution time
-# --------------------------------------------------
 def measure_mp(input_folder, workers):
     start = time.time()
-    run_mp(input_folder, workers=workers, save=False)
+    run_mp(input_folder, workers=workers)
     return time.time() - start
-
-

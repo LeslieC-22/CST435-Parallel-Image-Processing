@@ -1,32 +1,29 @@
+# Estimate parallel fraction (P) using Amdahl's Law
 def estimate_parallel_fraction(serial_time, parallel_time, workers):
-    """
-    Estimate parallel fraction (P) using Amdahl's Law.
-    """
+    # Calculate speedup
     speedup = serial_time / parallel_time
 
     if workers <= 1 or speedup <= 1:
         return 0.0
 
+    # Compute parallel fraction P
     P = (1 - (1 / speedup)) / (1 - (1 / workers))
     return max(0.0, min(P, 1.0))
 
-
+# Calculate theoretical speedup using Amdahl's Law
 def amdahl_speedup(P, workers):
     return 1 / (P + (1 - P) / workers)
 
-
+# Calculate execution time based on speedup
 def amdahl_execution_time(serial_time, speedup):
     return serial_time / speedup
 
-
+# Calculate efficiency based on speedup
 def amdahl_efficiency(speedup, workers):
     return speedup / workers
 
-
+# Compute and display Amdahl's Law predictions
 def compute_amdahl_predictions(serial_time, worker_list, measured_times):
-    """
-    Compute and PRINT Amdahl's Law results.
-    """
 
     # Determine best observed configuration
     best_index = measured_times.index(min(measured_times))
@@ -36,12 +33,14 @@ def compute_amdahl_predictions(serial_time, worker_list, measured_times):
     # Estimate parallel fraction
     P = estimate_parallel_fraction(serial_time, best_time, best_workers)
 
+    # Print Amdahl's Law's Result
     print("\n================ Amdahl's Law Analysis ================")
     print(f"Estimated Parallel Fraction (P): {P:.4f}")
     print("-------------------------------------------------------")
     print(f"{'Workers':>8} | {'Exec Time (s)':>12} | {'SpeedUp':>10} | {'Efficiency':>11}")
     print("-" * 55)
 
+    # Store results for plotting
     results = {
         "parallel_fraction": P,
         "speedup": [],
@@ -49,6 +48,7 @@ def compute_amdahl_predictions(serial_time, worker_list, measured_times):
         "efficiency": []
     }
 
+    # Compute predictions for each worker count
     for w in worker_list:
         s = round(amdahl_speedup(P, w),2)
         t = round(amdahl_execution_time(serial_time, s),2)

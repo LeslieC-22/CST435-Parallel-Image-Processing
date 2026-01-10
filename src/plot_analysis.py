@@ -3,27 +3,13 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-
-# ==================================================
-# Utility helpers
-# ==================================================
+# Save plot to file
 def save_plot(filename, folder):
     os.makedirs(folder, exist_ok=True)
     plt.savefig(os.path.join(folder, filename), dpi=300, bbox_inches="tight")
     plt.close()
 
-
-def compute_speedup(serial, times):
-    return [serial / t for t in times]
-
-
-def compute_efficiency(speedups, workers):
-    return [s / w for s, w in zip(speedups, workers)]
-
-
-# ==================================================
-# Plot functions
-# ==================================================
+# Plot graph
 def plot_graph(workers, y1, y2, label1, label2, ylabel, title, filename, outdir, color1, color2):
     plt.figure()
     plt.plot(workers, y1, "o-",color= color1, label=label1)
@@ -35,44 +21,38 @@ def plot_graph(workers, y1, y2, label1, label2, ylabel, title, filename, outdir,
     plt.grid(True)
     save_plot(filename, outdir)
 
-# ==================================================
-# MAIN ENTRY
-# ==================================================
+# Generate all performance graphs
 def plot_analysis(results):
 
+    # Set directories
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     RESULTS_DIR = os.path.join(BASE_DIR, "..", "results", "graphs")
-
     os.makedirs(RESULTS_DIR, exist_ok=True)
 
     for dataset, data in results.items():
-
         workers = data["workers"]
-        serial = data["serial"]
 
-        # Measured results
+        # Extract multiprocessing results
         mp = data["multiprocessing"]
-        mt = data["multithreading"]
-
         mp_execution = [t for t, _, _ in mp]
         sp_mp = [s for _, s, _ in mp]
         ef_mp = [e for _, _, e in mp]
 
+        # Extract multithreading results
+        mt = data["multithreading"]
         mt_execution = [t for t, _, _ in mt]
         sp_mt = [s for _, s, _ in mt]
         ef_mt = [e for _, _, e in mt]
 
-        # Amdahl predictions (ALREADY COMPUTED)
+        # Extract Amdahl predictions
         amdahl_mp = data["amdahl_mp"]
         amdahl_mt = data["amdahl_mt"]
-
+        
+        # Create dataset output folder
         dataset_dir = os.path.join(RESULTS_DIR, dataset)
         os.makedirs(dataset_dir, exist_ok=True)
 
-        # ==================================================
-        # Execution Time
-        # ================================================== 
-
+        # -------- Execution Time --------
         plot_graph(
             workers,
             mp_execution,
@@ -115,10 +95,7 @@ def plot_analysis(results):
             "green"
         )
 
-        # ==================================================
-        # SpeedUp
-        # ================================================== 
-
+        # -------- Speedup --------
         plot_graph(
             workers,
             sp_mp,
@@ -160,9 +137,7 @@ def plot_analysis(results):
             "green"
         )
 
-        # ==================================================
-        # Efficiency
-        # ================================================== 
+        # -------- Efficiency --------
         plot_graph(
             workers,
             ef_mp,
