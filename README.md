@@ -1,2 +1,119 @@
-# CST435-Parallel-Image-Processing
-Assignment 2 for CST435 - Parallel and Cloud Computing. Implements a parallel image processing pipeline using Python for performance comparison on GCP.
+# CST435: Parallel and Cloud Computing – Assignment 2  
+## Parallel Image Processing System (Python)
+
+---
+
+## Project Overview
+This project implements a parallel image processing system in Python that applies multiple image filters to a subset of images from the Food-101 dataset. The main objective is to compare different parallel programming approaches in Python and analyse their performance when executed on Google Cloud Platform (GCP).
+
+A sequential (serial) implementation is first developed and used as a baseline for performance evaluation. Two parallel implementations are then developed and compared against this baseline.
+
+---
+
+## Dataset
+https://www.kaggle.com/datasets/dansbecker/food-101
+
+For performance evaluation, only subsets of the dataset were used. Two dataset sizes were selected:
+- 100 images for small-scale testing 
+- 5000 images for large-scale testing
+
+---
+
+## Image Processing Operations**
+1. Grayscale conversion
+2. Gaussian blur (3×3 kernel)
+3. Edge detection (Sobel filter)
+4. Image sharpening
+5. Brightness adjustment
+
+---
+
+## Implementation
+
+### 1. Sequential (Serial) Version
+- Implemented in Python
+- Processes images one by one
+- Uses a single CPU core
+- Serves as the baseline for performance comparison
+
+### 2. Parallel - Multiprocessing
+- Implemented using Python’s `multiprocessing` module
+- Creates separate processes for each worker
+- Utilises multiple CPU cores
+- Bypasses Python’s Global Interpreter Lock (GIL)
+- Suitable for CPU-bound image processing tasks
+
+### 3. Parallel - Multithreading
+- Implemented using `concurrent.futures.ThreadPoolExecutor`
+- Uses lightweight threads instead of full processes
+- Shares memory between threads
+- Lower overhead than multiprocessing
+- Performance is affected by Python’s GIL
+
+---
+
+## Requirements
+- Python 3.13
+- OpenCV Library
+- Numpy
+- Matplotlib
+
+---
+
+## Results
+
+### 1. Processed Images
+Processed images are saved only for the **sequential implementation** to verify the correctness of the image processing pipeline.
+
+The processed images are stored in the following directories:
+- `results/100_images/` – processed output for the 100-image subset  
+- `results/5000_images/` – processed output for the 5000-image subset  
+
+Parallel implementations do not save output images in order to avoid saving duplicate processed images.
+
+
+### 2. Performance Analysis
+Performance is evaluated using the following metrics:
+- Execution time  
+- Speedup  
+- Efficiency  
+
+The sequential version is used as the baseline. Experiments are conducted using **100 and 5000 images** to analyse the impact of workload size on parallel performance.
+
+The performance comparison is also **analysed using Amdahl’s Law** to evaluate theoretical speedup limits and understand scalability constraints caused by the sequential portion of the program.
+
+Performance results are **visualised using graphs**, which are generated automatically and stored in the `results/graphs` directory.
+
+These comparisons help evaluate scalability, parallel efficiency, and the limitations imposed by the sequential portion of the program.
+
+---
+
+## Google Cloud Platform (GCP) Configuration and Execution
+
+### VM Configuration
+All experiments were conducted on a Google Cloud Compute Engine virtual machine with the following configuration to ensure fair and consistent performance evaluation:
+
+- Machine type: e2-standard-8  
+- vCPUs: 8 (8 cores)  
+- Memory: 32 GB  
+- VM provisioning model: Standard  
+
+### Execution Commands on GCP
+### 1. Clone Repository 
+    git clone https://github.com/LeslieC-22/CST435-Parallel-Image-Processing.git
+    cd CST435-Parallel-Image-Processing
+
+### 2. Create and Activate Virtual Environment
+    python3 -m venv venv
+    source venv/bin/activate
+
+### 3. Install dependencies 
+    pip install opencv-python numpy matplotlib
+
+### 4. Run the programs
+    python src/main.py
+
+
+
+   
+   
