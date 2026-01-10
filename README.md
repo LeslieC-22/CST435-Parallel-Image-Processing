@@ -48,7 +48,7 @@ For performance evaluation, only subsets of the dataset were used. Two dataset s
 
 
 ## Requirements
-- Python 3.13
+- Python 3.11
 - OpenCV Library
 - Numpy
 - Matplotlib
