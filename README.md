@@ -85,7 +85,7 @@ Performance results are **visualised using graphs**, which are generated automat
 All experiments were conducted on a Google Cloud Compute Engine virtual machine with the following configuration to ensure fair and consistent performance evaluation:
 
 - Machine type: e2-standard-8  
-- vCPUs: 8 (8 cores)  
+- vCPUs: 8 (4 cores)  
 - Memory: 32 GB  
 - VM provisioning model: Standard  
 
