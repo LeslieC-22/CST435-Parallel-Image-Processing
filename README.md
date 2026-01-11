@@ -85,23 +85,33 @@ Performance results are **visualised using graphs**, which are generated automat
 All experiments were conducted on a Google Cloud Compute Engine virtual machine with the following configuration to ensure fair and consistent performance evaluation:
 
 - Machine type: e2-standard-8  
-- vCPUs: 8 (8 cores)  
+- vCPUs: 8 (4 cores)  
 - Memory: 32 GB  
 - VM provisioning model: Standard  
 
 ### Execution Commands on GCP
-### 1. Clone Repository 
+### 1. Install Git 
+    sudo apt update
+    sudo apt install git -y
+  
+### 2. Clone Repository 
     git clone https://github.com/LeslieC-22/CST435-Parallel-Image-Processing.git
     cd CST435-Parallel-Image-Processing
 
-### 2. Create and Activate Virtual Environment
-    python3 -m venv venv
+### 3. Install Python venv support
+    sudo apt install python3.11-venv -y
+    
+### 4. Create and Activate Virtual Environment
+    python3.11 -m venv venv
     source venv/bin/activate
 
-### 3. Install dependencies 
+### 5. Install system OpenCV dependencies
+    sudo apt install libgl1 libglib2.0-0 libsm6 libxext6 libxrender-dev -y
+    
+### 6. Install dependencies 
     pip install opencv-python numpy matplotlib
 
-### 4. Run the programs
+### 7. Run the programs
     python src/main.py
 
 
