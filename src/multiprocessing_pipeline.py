@@ -10,7 +10,7 @@ from imageProcessing import (
     adjust_brightness
 )
 
-# Process one image
+# Process image
 def process_image_mp(input_path):
     # Read image
     img = cv2.imread(input_path)

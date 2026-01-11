@@ -9,7 +9,7 @@ from imageProcessing import (
     adjust_brightness
 )
 
-# Process a single image using a fixed image processing pipeline
+# Process image using a fixed image processing pipeline
 def process_image(input_path, output_path=None, save=False):
 
     # Read image from file
